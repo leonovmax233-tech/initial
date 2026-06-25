@@ -5,6 +5,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Plus, BookOpen, Play, Code, BrainCircuit, Sparkles } from 'lucide-react';
 import { useLearningStore } from '../store/useLearningStore';
 import StatsOverview from '../components/dashboard/StatsOverview';
+import PriorityTopicsDashboard from '../components/dashboard/PriorityTopicsDashboard';
 import { Button } from '../components/ui/button';
 import { Card } from '../components/ui/card';
 import { AIService } from '../lib/ai-service';
@@ -71,6 +72,8 @@ const Index = () => {
             </div>
           </div>
         </Card>
+
+        <PriorityTopicsDashboard />
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {sets.map((set) => (

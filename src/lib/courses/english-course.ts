@@ -1,14 +1,25 @@
-import { CourseLevel } from '../../types/learning';
+import { CourseLevel, Priority } from '../../types/learning';
 import { buildLesson, buildTopicLessons, LessonTemplate } from './lesson-builder';
 
 const TOPICS = [
-  { id: 'travel', title: 'Подорожі', desc: 'Vocabulary and grammar for travel situations.' },
-  { id: 'work', title: 'Робота', desc: 'Professional communication and workplace English.' },
-  { id: 'daily-life', title: 'Повсякденне життя', desc: 'Everyday conversations and routines.' },
-  { id: 'education', title: 'Освіта', desc: 'Academic language and study skills.' },
-  { id: 'technology', title: 'Технології', desc: 'Digital world vocabulary and expressions.' },
-  { id: 'business', title: 'Бізнес', desc: 'Meetings, negotiations, and business writing.' },
+  { id: 'travel', title: 'Подорожі', desc: 'Vocabulary and grammar for travel situations.', priority: 'essential' as Priority },
+  { id: 'work', title: 'Робота', desc: 'Professional communication and workplace English.', priority: 'essential' as Priority },
+  { id: 'daily-life', title: 'Повсякденне життя', desc: 'Everyday conversations and routines.', priority: 'essential' as Priority },
+  { id: 'education', title: 'Освіта', desc: 'Academic language and study skills.', priority: 'standard' as Priority },
+  { id: 'technology', title: 'Технології', desc: 'Digital world vocabulary and expressions.', priority: 'standard' as Priority },
+  { id: 'business', title: 'Бізнес', desc: 'Meetings, negotiations, and business writing.', priority: 'standard' as Priority },
 ];
+
+// Essential grammar topics get extra exercises.
+const ESSENTIAL_GRAMMAR = new Set([
+  'Present Simple',
+  'Past Simple',
+  'Future with Will',
+  'Present Perfect',
+  'Modal Verbs',
+  'Question Formation',
+  'Common Phrasal Verbs',
+]);
 
 const GRAMMAR_BY_LEVEL: Record<string, { title: string; explanation: string; rules: string[]; grammar: { sentence: string; options: string[]; correct: string; explanation: string } }[]> = {
   B1: [
@@ -96,6 +107,27 @@ function generateEnglishLevel(level: 'B1' | 'B1+' | 'B2' | 'C1'): CourseLevel['t
       const lessonNum = topicIdx * grammar.length + gIdx + 1;
       if (lessonNum > 15) return;
 
+      const isEssential = ESSENTIAL_GRAMMAR.has(g.title);
+      const extraPractice = isEssential ? vocab.flatMap((v) => ([
+        {
+          question: `Use "${g.title}": write a sentence with "${v.original}"`,
+          correctAnswer: v.translation,
+          hint: v.example ?? g.rules[0],
+          steps: [`Word: ${v.original}`, g.rules[0], `Answer: ${v.translation}`],
+          explanation: `${v.original} = ${v.translation}`,
+          type: 'writing' as const,
+        },
+        {
+          question: `Choose the correct form: "${g.title}" with "${v.original}"`,
+          options: [v.translation, 'Невідомо', 'Інше', 'Пропустити'].sort(() => Math.random() - 0.5),
+          correctAnswer: v.translation,
+          hint: v.example ?? g.rules[0],
+          steps: [g.rules[0], v.example ?? g.title, `Answer: ${v.translation}`],
+          explanation: v.example ?? `${v.original} = ${v.translation}`,
+          type: 'multiple-choice' as const,
+        },
+      ])) : [];
+
       lessons.push({
         id: `en-${level.toLowerCase().replace('+', 'p')}-${topic.id}-l${gIdx + 1}`,
         title: `${g.title} — ${topic.title}`,
@@ -121,7 +153,7 @@ function generateEnglishLevel(level: 'B1' | 'B1+' | 'B2' | 'C1'): CourseLevel['t
           steps: [`"${v.original}" is a ${topic.title.toLowerCase()} word.`, v.example ? `Example: ${v.example}` : g.rules[0], `Answer: ${v.translation}`],
           explanation: `${v.original} = ${v.translation}`,
           type: 'writing' as const,
-        })),
+        })).concat(extraPractice),
       });
     });
 
@@ -151,6 +183,8 @@ function generateEnglishLevel(level: 'B1' | 'B1+' | 'B2' | 'C1'): CourseLevel['t
       title: topic.title,
       description: topic.desc,
       subject: 'English' as const,
+      priority: topic.priority,
+      section: topic.priority === 'essential' ? '⭐ ESSENTIAL ENGLISH' : 'More Topics',
       lessons: buildTopicLessons(
         `en-${level.toLowerCase().replace('+', 'p')}-${topic.id}`,
         topic.title,

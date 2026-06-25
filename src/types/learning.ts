@@ -6,6 +6,13 @@ export type LessonPhase = 'theory' | 'practice' | 'quiz' | 'review' | 'complete'
 export type SkillType = 'vocabulary' | 'grammar' | 'writing' | 'listening' | 'python';
 export type ExerciseType = 'multiple-choice' | 'writing' | 'fill-blank' | 'code';
 
+export type Priority = 'core' | 'essential' | 'high' | 'standard';
+
+export interface PriorityBadge {
+  label: string;
+  variant: 'star' | 'fire' | 'rocket';
+}
+
 export interface Word {
   id: string;
   original: string;
@@ -83,11 +90,14 @@ export interface Topic {
   description: string;
   subject: Subject;
   lessons: Lesson[];
+  priority?: Priority;
+  section?: string;
 }
 
 export interface CourseLevel {
   level: Level;
   topics: Topic[];
+  section?: string;
 }
 
 export interface StudySet {

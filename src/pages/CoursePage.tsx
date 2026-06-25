@@ -4,8 +4,28 @@ import React from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ENGLISH_COURSE, POLISH_COURSE, PYTHON_COURSE } from '../lib/course-data';
 import { Card } from '../components/ui/card';
-import { ChevronRight, BookOpen, CheckCircle } from 'lucide-react';
+import { ChevronRight, BookOpen, CircleCheck as CheckCircle, Star, Flame, Rocket } from 'lucide-react';
 import { useLearningStore } from '../store/useLearningStore';
+import { getPriorityBadge, sortTopicsByPriority } from '../lib/priority';
+import { Topic } from '../types/learning';
+
+const PriorityBadge = ({ topic }: { topic: Topic }) => {
+  const badge = getPriorityBadge(topic);
+  if (!badge) return null;
+  const Icon = badge.variant === 'fire' ? Flame : badge.variant === 'rocket' ? Rocket : Star;
+  const color =
+    topic.priority === 'core'
+      ? 'bg-orange-100 text-orange-700 border-orange-200'
+      : topic.priority === 'essential'
+        ? 'bg-amber-100 text-amber-700 border-amber-200'
+        : 'bg-red-100 text-red-700 border-red-200';
+  return (
+    <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wide border ${color}`}>
+      <Icon className="w-3 h-3" />
+      {badge.label}
+    </span>
+  );
+};
 
 const CoursePage = () => {
   const { subject } = useParams();
@@ -60,11 +80,17 @@ const CoursePage = () => {
           <div key={level.level}>
             <h2 className="text-3xl font-black text-slate-900 mb-6 flex items-center gap-3">
               <BookOpen className="text-primary w-8 h-8" /> {level.level}
+              {level.section && (
+                <span className="text-sm font-bold text-primary bg-primary/10 px-3 py-1 rounded-full">{level.section}</span>
+              )}
             </h2>
             <div className="space-y-8">
-              {level.topics.map((topic) => (
+              {sortTopicsByPriority(level.topics).map((topic) => (
                 <div key={topic.id} className="space-y-4">
-                  <h3 className="text-xl font-bold text-slate-700 px-2">{topic.title}</h3>
+                  <div className="flex items-center gap-3 px-2 flex-wrap">
+                    <h3 className="text-xl font-bold text-slate-700">{topic.title}</h3>
+                    <PriorityBadge topic={topic} />
+                  </div>
                   <p className="text-sm text-slate-500 px-2">{topic.description}</p>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {topic.lessons.map((lesson) => {

@@ -1,14 +1,22 @@
-import { CourseLevel } from '../../types/learning';
+import { CourseLevel, Priority } from '../../types/learning';
 import { buildLesson, buildTopicLessons } from './lesson-builder';
 
 const TOPICS = [
-  { id: 'travel', title: 'Podróże', desc: 'Słownictwo podróżnicze i zwroty.' },
-  { id: 'work', title: 'Praca', desc: 'Język zawodowy i biurowy.' },
-  { id: 'daily-life', title: 'Codzienne życie', desc: 'Rozmowy codzienne i rutyny.' },
-  { id: 'education', title: 'Edukacja', desc: 'Język akademicki i szkolny.' },
-  { id: 'technology', title: 'Technologia', desc: 'Słownictwo cyfrowe.' },
-  { id: 'business', title: 'Biznes', desc: 'Spotkania i negocjacje.' },
+  { id: 'travel', title: 'Podróże', desc: 'Słownictwo podróżnicze i zwroty.', priority: 'essential' as Priority },
+  { id: 'work', title: 'Praca', desc: 'Język zawodowy i biurowy.', priority: 'essential' as Priority },
+  { id: 'daily-life', title: 'Codzienne życie', desc: 'Rozmowy codzienne i rutyny.', priority: 'essential' as Priority },
+  { id: 'education', title: 'Edukacja', desc: 'Język akademicki i szkolny.', priority: 'standard' as Priority },
+  { id: 'technology', title: 'Technologia', desc: 'Słownictwo cyfrowe.', priority: 'standard' as Priority },
+  { id: 'business', title: 'Biznes', desc: 'Spotkania i negocjacje.', priority: 'standard' as Priority },
 ];
+
+const ESSENTIAL_GRAMMAR_TITLES = new Set([
+  'Powitania',
+  'Czasownik być',
+  'Pytania',
+  'Rzeczowniki',
+  'Przypadki',
+]);
 
 const GRAMMAR_A1 = [
   { title: 'Powitania', explanation: 'Podstawowe zwroty grzecznościowe.', rules: ['Dzień dobry — formalnie', 'Cześć — nieformalnie', 'Do widzenia — pożegnanie'], sentence: '___! Jak się masz?', options: ['Dzień dobry', 'Do widzenia', 'Dziękuję', 'Proszę'], correct: 'Dzień dobry' },
@@ -104,7 +112,29 @@ function generatePolishLevel(
         steps: [`Слово: ${v.original}`, v.example ?? g.rules[0], `Відповідь: ${v.translation}`],
         explanation: `${v.original} = ${v.translation}`,
         type: 'writing' as const,
-      })),
+      })).concat(
+        ESSENTIAL_GRAMMAR_TITLES.has(g.title)
+          ? vocab.flatMap((v) => ([
+              {
+                question: `Wybierz: "${v.original}"`,
+                options: [v.translation, 'Невідомо', 'Інше', 'Пропустити'].sort(() => Math.random() - 0.5),
+                correctAnswer: v.translation,
+                hint: v.example ?? g.rules[0],
+                steps: [g.rules[0], v.example ?? g.title, `Відповідь: ${v.translation}`],
+                explanation: v.example ?? `${v.original} = ${v.translation}`,
+                type: 'multiple-choice' as const,
+              },
+              {
+                question: `Użyj w zdaniu: "${v.original}"`,
+                correctAnswer: v.translation,
+                hint: v.example ?? g.rules[0],
+                steps: [g.rules[0], v.example ?? g.title, `Відповідь: ${v.translation}`],
+                explanation: `${v.original} = ${v.translation}`,
+                type: 'writing' as const,
+              },
+            ]))
+          : []
+      ),
     }));
 
     // Extra vocab lessons
@@ -132,6 +162,8 @@ function generatePolishLevel(
       title: topic.title,
       description: topic.desc,
       subject: 'Polish' as const,
+      priority: topic.priority,
+      section: topic.priority === 'essential' ? '⭐ ESSENTIAL POLISH' : 'More Topics',
       lessons: buildTopicLessons(
         `pl-${level.toLowerCase()}-${topic.id}`,
         topic.title,
