@@ -2,115 +2,140 @@
 
 import React, { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ArrowLeft, Play, Layers, CheckSquare, PenTool, Headphones, Mic, BrainCircuit } from 'lucide-react';
+import { ArrowLeft, Layers, CheckSquare, PenTool, Headphones, Mic, BrainCircuit } from 'lucide-react';
 import { useLearningStore } from '../store/useLearningStore';
 import { Button } from '../components/ui/button';
 import { Card } from '../components/ui/card';
 import Flashcard from '../components/learning/Flashcard';
+import QuizMode from '../components/learning/QuizMode';
+import WritingMode from '../components/learning/WritingMode';
+import ListeningMode from '../components/learning/ListeningMode';
+import SpeakingMode from '../components/learning/SpeakingMode';
+import AITutorMode from '../components/learning/AITutorMode';
 import { showSuccess } from '../utils/toast';
 import confetti from 'canvas-confetti';
+import { LearningMode } from '../types/learning';
 
 const StudySet = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { sets, updateWordProgress, addXP } = useLearningStore();
+  const { sets, recordResult, addXP } = useLearningStore();
   const set = sets.find((s) => s.id === id);
 
-  const [mode, setMode] = useState<'overview' | 'flashcards'>('overview');
-  const [currentIndex, setCurrentIndex] = useState(0);
+  const [mode, setMode] = useState<LearningMode>('overview');
 
-  if (!set) return <div>Set not found</div>;
+  if (!set) return <div className="p-20 text-center">Набір не знайдено</div>;
 
-  const handleResult = (correct: boolean) => {
-    updateWordProgress(set.id, set.words[currentIndex].id, correct);
-    addXP(correct ? 20 : 5);
+  const handleResult = (wordId: string, correct: boolean) => {
+    recordResult(set.id, wordId, correct);
+    addXP(correct ? 15 : 5);
+  };
 
-    if (currentIndex < set.words.length - 1) {
-      setCurrentIndex(currentIndex + 1);
-    } else {
-      confetti({
-        particleCount: 100,
-        spread: 70,
-        origin: { y: 0.6 }
-      });
-      showSuccess('Session complete! Great job!');
-      setMode('overview');
-      setCurrentIndex(0);
-    }
+  const handleFinish = () => {
+    confetti({
+      particleCount: 150,
+      spread: 70,
+      origin: { y: 0.6 }
+    });
+    showSuccess('Чудова робота! Сесію завершено.');
+    setMode('overview');
   };
 
   const modes = [
-    { id: 'flashcards', name: 'Flashcards', icon: Layers, color: 'bg-blue-500' },
-    { id: 'quiz', name: 'Quiz', icon: CheckSquare, color: 'bg-green-500' },
-    { id: 'writing', name: 'Writing', icon: PenTool, color: 'bg-orange-500' },
-    { id: 'listening', name: 'Listening', icon: Headphones, color: 'bg-purple-500' },
-    { id: 'speaking', name: 'Speaking', icon: Mic, color: 'bg-red-500' },
-    { id: 'ai', name: 'AI Tutor', icon: BrainCircuit, color: 'bg-indigo-500' },
+    { id: 'flashcards', name: 'Картки', icon: Layers, color: 'bg-blue-500', desc: 'Класичне запам\'ятовування' },
+    { id: 'quiz', name: 'Тест', icon: CheckSquare, color: 'bg-green-500', desc: 'Вибір правильної відповіді' },
+    { id: 'writing', name: 'Письмо', icon: PenTool, color: 'bg-orange-500', desc: 'Тренування правопису' },
+    { id: 'listening', name: 'Аудіювання', icon: Headphones, color: 'bg-purple-500', desc: 'Сприйняття на слух' },
+    { id: 'speaking', name: 'Вимова', icon: Mic, color: 'bg-red-500', desc: 'Тренування мовлення' },
+    { id: 'ai-tutor', name: 'AI Тьютор', icon: BrainCircuit, color: 'bg-indigo-500', desc: 'Пояснення та поради' },
   ];
 
-  if (mode === 'flashcards') {
-    return (
-      <div className="max-w-4xl mx-auto p-6">
-        <div className="flex items-center justify-between mb-12">
-          <Button variant="ghost" onClick={() => setMode('overview')}>
-            <ArrowLeft className="mr-2 w-4 h-4" /> Back to Set
-          </Button>
-          <div className="text-sm font-bold text-muted-foreground">
-            {currentIndex + 1} / {set.words.length}
+  const renderMode = () => {
+    switch (mode) {
+      case 'flashcards':
+        return <div className="py-10"><Flashcard word={set.words[0]} onResult={(c) => { handleResult(set.words[0].id, c); handleFinish(); }} /></div>;
+      case 'quiz':
+        return <div className="py-10"><QuizMode words={set.words} onResult={handleResult} onFinish={handleFinish} /></div>;
+      case 'writing':
+        return <div className="py-10"><WritingMode words={set.words} onResult={handleResult} onFinish={handleFinish} /></div>;
+      case 'listening':
+        return <div className="py-10"><ListeningMode words={set.words} onResult={handleResult} onFinish={handleFinish} /></div>;
+      case 'speaking':
+        return <div className="py-10"><SpeakingMode words={set.words} onResult={handleResult} onFinish={handleFinish} /></div>;
+      case 'ai-tutor':
+        return <div className="py-10"><AITutorMode word={set.words[0]} /></div>;
+      default:
+        return (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
+            {modes.map((m) => (
+              <Card 
+                key={m.id} 
+                className="p-6 flex flex-col items-center text-center gap-4 cursor-pointer hover:shadow-xl hover:-translate-y-1 transition-all border-slate-200 rounded-3xl group"
+                onClick={() => setMode(m.id as LearningMode)}
+              >
+                <div className={`p-5 rounded-2xl text-white ${m.color} shadow-lg group-hover:scale-110 transition-transform`}>
+                  <m.icon className="w-8 h-8" />
+                </div>
+                <div>
+                  <h3 className="text-xl font-bold text-slate-900">{m.name}</h3>
+                  <p className="text-sm text-slate-500 mt-1">{m.desc}</p>
+                </div>
+              </Card>
+            ))}
           </div>
-        </div>
-        <Flashcard word={set.words[currentIndex]} onResult={handleResult} />
-      </div>
-    );
-  }
+        );
+    }
+  };
 
   return (
-    <div className="max-w-5xl mx-auto p-6">
-      <Button variant="ghost" onClick={() => navigate('/')} className="mb-6">
-        <ArrowLeft className="mr-2 w-4 h-4" /> Back to Dashboard
-      </Button>
-
-      <div className="mb-10">
-        <h1 className="text-4xl font-black mb-2">{set.title}</h1>
-        <p className="text-slate-500">{set.words.length} terms • {set.sourceLanguage} to {set.targetLanguage}</p>
-      </div>
-
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-12">
-        {modes.map((m) => (
-          <Card 
-            key={m.id} 
-            className="p-4 flex flex-col items-center justify-center gap-3 cursor-pointer hover:scale-105 transition-transform border-slate-200"
-            onClick={() => m.id === 'flashcards' ? setMode('flashcards') : null}
-          >
-            <div className={`p-3 rounded-2xl text-white ${m.color}`}>
-              <m.icon className="w-6 h-6" />
+    <div className="min-h-screen bg-slate-50/50 pb-20">
+      <div className="max-w-6xl mx-auto p-6">
+        <div className="flex items-center justify-between mb-8">
+          <Button variant="ghost" onClick={() => mode === 'overview' ? navigate('/') : setMode('overview')} className="rounded-full">
+            <ArrowLeft className="mr-2 w-4 h-4" /> {mode === 'overview' ? 'До панелі' : 'Назад до вибору'}
+          </Button>
+          {mode === 'overview' && (
+            <div className="flex items-center gap-2 px-4 py-2 bg-white rounded-full shadow-sm border border-slate-100">
+              <span className="text-sm font-bold text-primary">{set.words.length} слів</span>
             </div>
-            <span className="text-sm font-bold">{m.name}</span>
-          </Card>
-        ))}
-      </div>
+          )}
+        </div>
 
-      <h2 className="text-2xl font-bold mb-6">Terms in this set</h2>
-      <div className="space-y-3">
-        {set.words.map((word) => (
-          <Card key={word.id} className="p-6 flex items-center justify-between border-slate-200 hover:border-primary/30 transition-colors">
-            <div className="flex-1">
-              <p className="text-lg font-bold text-slate-900">{word.original}</p>
-            </div>
-            <div className="w-px h-8 bg-slate-100 mx-8" />
-            <div className="flex-1">
-              <p className="text-lg text-slate-600">{word.translation}</p>
-            </div>
-            <div className="flex items-center gap-2 ml-4">
-              {[...Array(5)].map((_, i) => (
-                <div 
-                  key={i} 
-                  className={`w-2 h-2 rounded-full ${i < word.masteryLevel ? 'bg-green-500' : 'bg-slate-200'}`} 
-                />
+        {mode === 'overview' && (
+          <div className="mb-10">
+            <h1 className="text-4xl font-black text-slate-900 mb-2">{set.title}</h1>
+            <p className="text-slate-500 text-lg">Виберіть режим, щоб почати тренування</p>
+          </div>
+        )}
+
+        {renderMode()}
+
+        {mode === 'overview' && (
+          <div className="mt-16">
+            <h2 className="text-2xl font-bold mb-6 text-slate-800">Список слів</h2>
+            <div className="grid grid-cols-1 gap-3">
+              {set.words.map((word) => (
+                <Card key={word.id} className="p-5 flex items-center justify-between border-slate-200 hover:border-primary/30 transition-colors rounded-2xl">
+                  <div className="flex-1">
+                    <p className="text-lg font-bold text-slate-900">{word.original}</p>
+                  </div>
+                  <div className="w-px h-6 bg-slate-100 mx-6" />
+                  <div className="flex-1">
+                    <p className="text-lg text-slate-600">{word.translation}</p>
+                  </div>
+                  <div className="flex items-center gap-1.5 ml-4">
+                    {[...Array(5)].map((_, i) => (
+                      <div 
+                        key={i} 
+                        className={`w-2.5 h-2.5 rounded-full ${i < word.masteryLevel ? 'bg-green-500' : 'bg-slate-200'}`} 
+                      />
+                    ))}
+                  </div>
+                </Card>
               ))}
             </div>
-          </Card>
-        ))}
+          </div>
+        )}
       </div>
     </div>
   );

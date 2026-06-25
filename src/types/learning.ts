@@ -7,10 +7,11 @@ export interface Word {
   example?: string;
   pronunciation?: string;
   usageTip?: string;
-  difficulty: number; // 1-5
+  difficulty: number; 
   lastReviewed?: number;
   nextReview?: number;
-  masteryLevel: number; // 0-5 (SRS)
+  masteryLevel: number; // 0-5
+  wrongCount: number;
 }
 
 export interface StudySet {
@@ -29,8 +30,9 @@ export interface UserStats {
   streak: number;
   lastActivityDate: string;
   wordsLearned: number;
-  accuracy: number;
-  weakWords: string[]; // IDs
+  totalAnswers: number;
+  correctAnswers: number;
+  weakWordIds: string[];
 }
 
-export type LearningMode = 'flashcards' | 'quiz' | 'match' | 'writing' | 'grammar' | 'listening' | 'speaking';
+export type LearningMode = 'overview' | 'flashcards' | 'quiz' | 'writing' | 'listening' | 'speaking' | 'ai-tutor';
