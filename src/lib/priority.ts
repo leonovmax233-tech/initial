@@ -1,4 +1,4 @@
-import { Priority, PriorityBadge, Subject, Topic } from '../types/learning';
+import { CourseLevel, Priority, PriorityBadge, Subject, Topic } from '../types/learning';
 
 export const PRIORITY_BADGES: Record<Priority, PriorityBadge> = {
   core: { label: 'CORE TOPIC', variant: 'fire' },
@@ -39,4 +39,30 @@ export const PRIORITY_LABELS: Record<Subject, string> = {
 export function getPriorityBadge(topic: Topic): PriorityBadge | null {
   if (!topic.priority || topic.priority === 'standard') return null;
   return PRIORITY_BADGES[topic.priority];
+}
+
+export interface TrackProgress {
+  completed: number;
+  total: number;
+  percent: number;
+}
+
+// Progress across CORE / ESSENTIAL (priority) topics of a single course.
+export function getTrackProgress(
+  course: CourseLevel[],
+  completedLessonIds: Set<string>
+): TrackProgress {
+  let total = 0;
+  let completed = 0;
+  course.forEach((level) => {
+    level.topics.forEach((topic) => {
+      if (!isPriorityTopic(topic)) return;
+      topic.lessons.forEach((lesson) => {
+        total += 1;
+        if (completedLessonIds.has(lesson.id)) completed += 1;
+      });
+    });
+  });
+  const percent = total > 0 ? Math.round((completed / total) * 100) : 0;
+  return { completed, total, percent };
 }
