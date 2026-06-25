@@ -92,6 +92,8 @@ export interface Topic {
   lessons: Lesson[];
   priority?: Priority;
   section?: string;
+  theory?: TheoryContent;
+  practiceTasks?: string[];
 }
 
 export interface CourseLevel {

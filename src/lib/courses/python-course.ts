@@ -30,6 +30,24 @@ const CORE_TOPICS: {
     title: 'Variables',
     desc: 'Naming, assignment, reassignment, naming rules.',
     priority: 'core',
+    theory: {
+      explanation: 'Variables are named containers for storing data. In Python, you create a variable by assigning a value with =. Variables can be reassigned and change type dynamically.',
+      rules: [
+        'Variable names: letters, digits, underscores; cannot start with a digit',
+        'Case-sensitive: Name and name are different',
+        'Use snake_case for readability (e.g. user_name)',
+        'UPPER_CASE by convention signals a constant',
+        'Variables can change type at runtime (dynamic typing)',
+      ],
+      examples: [
+        { original: 'name = "Alice"', translation: 'Assign string "Alice" to variable name' },
+        { original: 'x = 10\nx = 20', translation: 'Reassign x from 10 to 20' },
+        { original: 'a, b = 1, 2', translation: 'Multiple assignment: a=1, b=2' },
+        { original: 'a, b = b, a', translation: 'Swap two variables in one line' },
+        { original: 'PI = 3.14159', translation: 'Convention: UPPER_CASE for constants' },
+        { original: 'count += 1', translation: 'Augmented assignment: count = count + 1' },
+      ],
+    },
     exercises: [
       { id: 'py-var-1', title: 'Assign a Variable', level: 'Beginner', topic: 'py-variables', explanation: 'Create a variable with name = value.', code: 'name = "LinguaFlow"\nprint(name)', expected: 'LinguaFlow', hint: 'Use = to assign', solution: 'name = "LinguaFlow"', q: 'How to assign 5 to x?', opts: ['x = 5', 'x == 5', '5 -> x', 'x: 5'], ans: 'x = 5' },
       { id: 'py-var-2', title: 'Reassign a Variable', level: 'Beginner', topic: 'py-variables', explanation: 'Variables can be reassigned to new values.', code: 'x = 1\nx = 2\nprint(x)', expected: '2', hint: 'Last assignment wins', solution: '2', q: 'After x=1; x=2, x is?', opts: ['1', '2', '3', 'Error'], ans: '2' },
@@ -48,6 +66,25 @@ const CORE_TOPICS: {
     title: 'Data Types',
     desc: 'int, float, str, bool and type conversion.',
     priority: 'core',
+    theory: {
+      explanation: 'Python has built-in data types: int (whole numbers), float (decimals), str (text), and bool (True/False). Use type() to check a value\'s type, and int(), str(), float(), bool() to convert between types.',
+      rules: [
+        'int = whole numbers (42, -7, 0)',
+        'float = decimal numbers (3.14, -0.5)',
+        'str = text in quotes ("hello", \'world\')',
+        'bool = True or False (capitalized)',
+        'Division / always returns a float; // returns an int (floor)',
+        'Use int(), str(), float(), bool() to convert between types',
+      ],
+      examples: [
+        { original: 'x = 42', translation: 'int: whole number' },
+        { original: 'pi = 3.14', translation: 'float: decimal number' },
+        { original: 'name = "Alice"', translation: 'str: text in quotes' },
+        { original: 'is_ready = True', translation: 'bool: True or False' },
+        { original: 'n = int("42")', translation: 'Convert string "42" to integer 42' },
+        { original: 's = str(42)', translation: 'Convert integer 42 to string "42"' },
+      ],
+    },
     exercises: [
       { id: 'py-dt-1', title: 'Integer Type', level: 'Beginner', topic: 'py-data-types', explanation: 'int stores whole numbers.', code: 'x = 42\nprint(type(x).__name__)', expected: 'int', hint: 'type() returns the type', solution: 'int', q: 'Type of 42?', opts: ['int', 'str', 'float', 'bool'], ans: 'int' },
       { id: 'py-dt-2', title: 'Float Type', level: 'Beginner', topic: 'py-data-types', explanation: 'float stores decimals.', code: 'x = 3.14\nprint(type(x).__name__)', expected: 'float', hint: 'Decimals are floats', solution: 'float', q: 'Type of 3.14?', opts: ['float', 'int', 'str', 'bool'], ans: 'float' },
@@ -66,6 +103,25 @@ const CORE_TOPICS: {
     title: 'Input / Output',
     desc: 'print(), input(), formatting output.',
     priority: 'core',
+    theory: {
+      explanation: 'print() displays output to the console. input() reads user input as a string. f-strings (f"...") let you embed variables and expressions inside strings using {}.',
+      rules: [
+        'print(value) displays text or numbers',
+        'print(a, b) separates multiple values with a space',
+        'print(a, b, sep="-") changes the separator',
+        'print(a, end="") prevents the default newline',
+        'input(prompt) returns user input as a string',
+        'f"Hi {name}" embeds variables in a string',
+      ],
+      examples: [
+        { original: 'print("Hello")', translation: 'Output: Hello' },
+        { original: 'print("A", "B")', translation: 'Output: A B' },
+        { original: 'print("A", "B", sep="-")', translation: 'Output: A-B' },
+        { original: 'name = input("Name: ")', translation: 'Read input with a prompt' },
+        { original: 'age = int(input("Age: "))', translation: 'Read input and convert to int' },
+        { original: 'print(f"Hi {name}")', translation: 'f-string embeds a variable' },
+      ],
+    },
     exercises: [
       { id: 'py-io-1', title: 'Print Text', level: 'Beginner', topic: 'py-input-output', explanation: 'print() displays output.', code: 'print("Hello")', expected: 'Hello', hint: 'print() shows text', solution: 'Hello', q: 'Function to display text?', opts: ['print()', 'show()', 'display()', 'output()'], ans: 'print()' },
       { id: 'py-io-2', title: 'Print Multiple Values', level: 'Beginner', topic: 'py-input-output', explanation: 'print accepts multiple args separated by space.', code: 'print("A", "B")', expected: 'A B', hint: 'Comma separates with space', solution: 'A B', q: 'print("A","B") outputs?', opts: ['A B', 'AB', 'A,B', 'A;B'], ans: 'A B' },
@@ -84,6 +140,26 @@ const CORE_TOPICS: {
     title: 'Conditions (if / else)',
     desc: 'Branching with if, elif, else.',
     priority: 'core',
+    theory: {
+      explanation: 'Conditional statements let your program make decisions. if runs code when a condition is True. elif adds more checks. else runs when all previous conditions are False. Indentation (4 spaces) defines the code block.',
+      rules: [
+        'if condition: runs when the condition is True',
+        'elif condition: checks another condition if previous was False',
+        'else: runs when all conditions are False',
+        'Indentation (4 spaces) defines the code block',
+        'Comparison operators: ==, !=, <, >, <=, >=',
+        'Logical operators: and, or, not',
+        '0, "", [], None are falsy; everything else is truthy',
+      ],
+      examples: [
+        { original: 'if x > 5:\n    print("big")', translation: 'Print "big" if x > 5' },
+        { original: 'if x > 5:\n    print("big")\nelse:\n    print("small")', translation: 'Two-way branch' },
+        { original: 'if x > 10:\n    print("A")\nelif x > 5:\n    print("B")\nelse:\n    print("C")', translation: 'Multi-way branch with elif' },
+        { original: 'if x > 0 and x < 10:\n    print("in range")', translation: 'Combine with and' },
+        { original: 'label = "big" if x > 3 else "small"', translation: 'Ternary one-liner' },
+        { original: 'if not is_valid:\n    print("error")', translation: 'Use not to invert' },
+      ],
+    },
     exercises: [
       { id: 'py-if-1', title: 'Basic if', level: 'Beginner', topic: 'py-conditions', explanation: 'if runs code when condition is True.', code: 'x = 10\nif x > 5:\n    print("big")', expected: 'big', hint: 'Indentation matters', solution: 'big', q: 'if runs when?', opts: ['Condition is True', 'Always', 'Never', 'Loop ends'], ans: 'Condition is True' },
       { id: 'py-if-2', title: 'if / else', level: 'Beginner', topic: 'py-conditions', explanation: 'else runs when if is False.', code: 'x = 2\nif x > 5:\n    print("big")\nelse:\n    print("small")', expected: 'small', hint: 'else is fallback', solution: 'small', q: 'else runs when?', opts: ['if is False', 'Always', 'Never', 'Loop'], ans: 'if is False' },
@@ -102,6 +178,26 @@ const CORE_TOPICS: {
     title: 'Loops (for / while)',
     desc: 'Iteration with for, while, break, continue.',
     priority: 'core',
+    theory: {
+      explanation: 'Loops repeat code. for loops iterate over a sequence (range, list, string). while loops repeat while a condition is True. break exits a loop immediately; continue skips to the next iteration.',
+      rules: [
+        'for i in range(n): iterates n times (0 to n-1)',
+        'range(start, stop) iterates from start to stop-1',
+        'range(start, stop, step) uses a custom step',
+        'while condition: repeats while condition is True',
+        'break exits the loop immediately',
+        'continue skips the rest of the current iteration',
+        'for char in "text": iterates characters in a string',
+      ],
+      examples: [
+        { original: 'for i in range(3):\n    print(i)', translation: 'Output: 0 1 2' },
+        { original: 'for i in range(2, 5):\n    print(i)', translation: 'Output: 2 3 4' },
+        { original: 'for i in range(0, 10, 2):\n    print(i)', translation: 'Output: 0 2 4 6 8 (step=2)' },
+        { original: 'while n > 0:\n    print(n)\n    n -= 1', translation: 'Count down from n to 1' },
+        { original: 'for i in range(5):\n    if i == 3: break\n    print(i)', translation: 'Stop at 3; Output: 0 1 2' },
+        { original: 'for i in range(4):\n    if i == 1: continue\n    print(i)', translation: 'Skip 1; Output: 0 2 3' },
+      ],
+    },
     exercises: [
       { id: 'py-loop-1', title: 'for with range', level: 'Beginner', topic: 'py-loops', explanation: 'for i in range(n) iterates n times.', code: 'for i in range(3):\n    print(i)', expected: '0\n1\n2', hint: 'range(3) = 0,1,2', solution: '0, 1, 2', q: 'range(3) gives?', opts: ['0,1,2', '1,2,3', '0,1,2,3', '3'], ans: '0,1,2' },
       { id: 'py-loop-2', title: 'range with start', level: 'Beginner', topic: 'py-loops', explanation: 'range(start, stop) starts at start.', code: 'for i in range(2, 5):\n    print(i)', expected: '2\n3\n4', hint: 'stop is exclusive', solution: '2, 3, 4', q: 'range(2,5) gives?', opts: ['2,3,4', '2,3,4,5', '2,3', '5'], ans: '2,3,4' },
@@ -120,6 +216,27 @@ const CORE_TOPICS: {
     title: 'Functions',
     desc: 'def, parameters, return, defaults, args.',
     priority: 'core',
+    theory: {
+      explanation: 'Functions are reusable blocks of code. Use def to define them, pass values as parameters, and return sends a result back. Functions help organize code and avoid repetition (DRY principle).',
+      rules: [
+        'def name(params): defines a function',
+        'return value sends a result back to the caller',
+        'Parameters receive values; arguments are passed when calling',
+        'Default parameters: def f(x=0) — used when argument omitted',
+        '*args collects extra positional arguments into a tuple',
+        '**kwargs collects keyword arguments into a dict',
+        'Functions without return return None',
+        'lambda args: expr creates an anonymous one-line function',
+      ],
+      examples: [
+        { original: 'def greet():\n    return "Hi"', translation: 'Function with no parameters' },
+        { original: 'def add(a, b):\n    return a + b', translation: 'Function with two parameters' },
+        { original: 'def greet(name="User"):\n    return f"Hi {name}"', translation: 'Default parameter' },
+        { original: 'def total(*nums):\n    return sum(nums)', translation: '*args collects many arguments' },
+        { original: 'def minmax(nums):\n    return min(nums), max(nums)', translation: 'Return multiple values as a tuple' },
+        { original: 'double = lambda x: x * 2', translation: 'Anonymous lambda function' },
+      ],
+    },
     exercises: [
       { id: 'py-fn-1', title: 'Define a Function', level: 'Beginner', topic: 'py-functions', explanation: 'def name(): creates a function.', code: 'def greet():\n    return "Hi"\nprint(greet())', expected: 'Hi', hint: 'def + name', solution: 'Hi', q: 'Keyword to define function?', opts: ['def', 'function', 'func', 'fn'], ans: 'def' },
       { id: 'py-fn-2', title: 'Parameters', level: 'Beginner', topic: 'py-functions', explanation: 'Functions accept arguments.', code: 'def add(a, b):\n    return a + b\nprint(add(3, 4))', expected: '7', hint: 'Pass values', solution: '7', q: 'add(3,4) returns?', opts: ['7', '34', '1', 'Error'], ans: '7' },
@@ -138,6 +255,28 @@ const CORE_TOPICS: {
     title: 'Lists',
     desc: 'Creating, indexing, slicing, methods.',
     priority: 'core',
+    theory: {
+      explanation: 'Lists store ordered, mutable collections of items. Use [] to create, indexing (list[i]) to access, slicing (list[a:b]) to get sublists, and methods like append, remove, pop to modify.',
+      rules: [
+        '[] creates an empty list; [1, 2, 3] creates with items',
+        'Indexing is 0-based: list[0] is the first item',
+        'Negative indices: list[-1] is the last item',
+        'Slicing: list[start:end] returns a sublist (end is exclusive)',
+        'append(item) adds to the end; insert(i, item) inserts at index',
+        'remove(value) removes first match; pop() removes and returns last',
+        'len(list) returns the number of items',
+        'in checks membership: 2 in [1, 2, 3] → True',
+        'List comprehension: [x**2 for x in range(5)]',
+      ],
+      examples: [
+        { original: 'nums = [1, 2, 3]', translation: 'Create a list' },
+        { original: 'print(nums[0])', translation: 'Access first item: 1' },
+        { original: 'print(nums[-1])', translation: 'Access last item: 3' },
+        { original: 'print(nums[1:3])', translation: 'Slice: [2, 3]' },
+        { original: 'nums.append(4)', translation: 'Add 4 to end: [1, 2, 3, 4]' },
+        { original: 'squares = [x**2 for x in range(5)]', translation: 'Comprehension: [0, 1, 4, 9, 16]' },
+      ],
+    },
     exercises: [
       { id: 'py-list-1', title: 'Create a List', level: 'Beginner', topic: 'py-lists', explanation: 'Lists store ordered items in [].', code: 'nums = [1, 2, 3]\nprint(nums)', expected: '[1, 2, 3]', hint: '[] creates a list', solution: '[1, 2, 3]', q: 'List literal uses?', opts: ['[]', '()', '{}', '<>'], ans: '[]' },
       { id: 'py-list-2', title: 'Indexing', level: 'Beginner', topic: 'py-lists', explanation: 'list[i] gets item at index i (0-based).', code: 'fruits = ["a", "b", "c"]\nprint(fruits[0])', expected: 'a', hint: 'Index starts at 0', solution: 'a', q: 'First item index?', opts: ['0', '1', '-1', 'None'], ans: '0' },
@@ -156,6 +295,27 @@ const CORE_TOPICS: {
     title: 'Dictionaries',
     desc: 'Key-value pairs, access, methods.',
     priority: 'core',
+    theory: {
+      explanation: 'Dictionaries store data as key-value pairs. Keys must be unique and immutable (strings, numbers, tuples). Use {} to create, d[key] to access, and methods like keys(), values(), items() to iterate.',
+      rules: [
+        '{} creates an empty dict; {"a": 1} creates with a pair',
+        'd[key] accesses the value; raises KeyError if key missing',
+        'd.get(key, default) returns default if key is missing',
+        'd[key] = value adds or updates a key',
+        'del d[key] or d.pop(key) removes a key',
+        'keys(), values(), items() return views for iteration',
+        'in checks if a key exists: "a" in d',
+        'Keys must be unique and immutable (str, int, tuple)',
+      ],
+      examples: [
+        { original: 'd = {"name": "Alice", "age": 30}', translation: 'Create a dict' },
+        { original: 'print(d["name"])', translation: 'Access by key: Alice' },
+        { original: 'print(d.get("email", "N/A"))', translation: 'Safe access with default: N/A' },
+        { original: 'd["email"] = "a@b.com"', translation: 'Add a new key-value pair' },
+        { original: 'for k, v in d.items():\n    print(k, v)', translation: 'Iterate key-value pairs' },
+        { original: 'del d["age"]', translation: 'Remove the "age" key' },
+      ],
+    },
     exercises: [
       { id: 'py-dict-1', title: 'Create a Dict', level: 'Beginner', topic: 'py-dictionaries', explanation: 'Dicts store key-value pairs in {}.', code: 'd = {"a": 1}\nprint(d)', expected: "{'a': 1}", hint: '{} with key:value', solution: "{'a': 1}", q: 'Dict literal uses?', opts: ['{}', '[]', '()', '<>'], ans: '{}' },
       { id: 'py-dict-2', title: 'Access by Key', level: 'Beginner', topic: 'py-dictionaries', explanation: 'd[key] returns the value.', code: 'd = {"name": "Ann"}\nprint(d["name"])', expected: 'Ann', hint: 'Use key in []', solution: 'Ann', q: 'Get value for "name"?', opts: ['d["name"]', 'd.name', 'd(0)', 'd->name'], ans: 'd["name"]' },
@@ -271,7 +431,15 @@ function buildPythonLesson(ex: PyExercise) {
   });
 }
 
-function buildTopic(meta: { id: string; title: string; desc: string; priority: Priority; exercises: PyExercise[] }): Topic {
+function buildTopic(meta: {
+  id: string;
+  title: string;
+  desc: string;
+  priority: Priority;
+  exercises: PyExercise[];
+  theory?: { explanation: string; rules: string[]; examples: { original: string; translation: string }[] };
+  practiceTasks?: string[];
+}): Topic {
   const lessons = meta.exercises.map(buildPythonLesson);
   return {
     id: meta.id,
@@ -281,6 +449,8 @@ function buildTopic(meta: { id: string; title: string; desc: string; priority: P
     priority: meta.priority,
     section: meta.priority === 'core' ? 'CORE PYTHON (MOST IMPORTANT)' : 'Advanced Topics',
     lessons,
+    theory: meta.theory,
+    practiceTasks: meta.practiceTasks ?? meta.exercises.map((e) => e.title),
   };
 }
 

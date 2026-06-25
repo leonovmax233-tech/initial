@@ -21,6 +21,72 @@ const ESSENTIAL_GRAMMAR = new Set([
   'Common Phrasal Verbs',
 ]);
 
+const TOPIC_THEORY: Record<string, { explanation: string; rules: string[]; examples: { original: string; translation: string }[] }> = {
+  travel: {
+    explanation: 'Travel vocabulary covers airports, hotels, directions, and transportation. Master these words to navigate any trip confidently.',
+    rules: [
+      'Airport: passport, boarding pass, departure, arrival, gate',
+      'Hotel: reservation, check-in, check-out, room service',
+      'Directions: turn left/right, go straight, next to, opposite',
+      'Transportation: ticket, platform, schedule, delay',
+    ],
+    examples: [
+      { original: 'Where is the boarding gate?', translation: 'Де знаходиться вихід на посадку?' },
+      { original: 'I have a reservation for tonight.', translation: 'У мене є бронювання на сьогодні.' },
+      { original: 'How much is a ticket to Warsaw?', translation: 'Скільки коштує квиток до Варшави?' },
+      { original: 'Turn left at the traffic lights.', translation: 'Поверніть ліворуч на світлофорі.' },
+      { original: 'My flight was delayed by two hours.', translation: 'Мій рейс затримали на дві години.' },
+      { original: 'Is breakfast included?', translation: 'Сніданок включений?' },
+      { original: 'Can I check in early?', translation: 'Можна заселитися раніше?' },
+      { original: 'Where is the nearest metro station?', translation: 'Де найближча станція метро?' },
+      { original: 'I need to book a taxi.', translation: 'Мені потрібно замовити таксі.' },
+      { original: 'How do I get to the city centre?', translation: 'Як дістатися до центру міста?' },
+    ],
+  },
+  work: {
+    explanation: 'Work vocabulary helps you communicate in professional settings: offices, meetings, interviews, and emails.',
+    rules: [
+      'Office: colleague, deadline, meeting, schedule, shift',
+      'Career: promotion, interview, resume, salary, contract',
+      'Communication: email, report, presentation, feedback',
+      'Meetings: agenda, minutes, chair, participant, action item',
+    ],
+    examples: [
+      { original: 'The deadline for the report is Friday.', translation: 'Дедлайн для звіту — п\'ятниця.' },
+      { original: 'She got a promotion last month.', translation: 'Вона отримала підвищення минулого місяця.' },
+      { original: 'Let\'s schedule a meeting for Tuesday.', translation: 'Давай призначимо зустріч на вівторок.' },
+      { original: 'My colleague is very helpful.', translation: 'Мій колега дуже допомагає.' },
+      { original: 'The interview went well.', translation: 'Співбесіда пройшла добре.' },
+      { original: 'I need to send this email to the team.', translation: 'Мені потрібно надіслати цей лист команді.' },
+      { original: 'What\'s on the agenda today?', translation: 'Що в плані на сьогодні?' },
+      { original: 'He gave a great presentation.', translation: 'Він зробив чудову презентацію.' },
+      { original: 'My salary is paid monthly.', translation: 'Моя зарплата виплачується щомісяця.' },
+      { original: 'I have a job interview tomorrow.', translation: 'Завтра в мене співбесіда.' },
+    ],
+  },
+  'daily-life': {
+    explanation: 'Everyday vocabulary covers family, home, daily routines, and common social situations.',
+    rules: [
+      'Family: parents, siblings, relatives, children',
+      'Home: kitchen, bedroom, bathroom, furniture',
+      'Routine: morning, commute, work, evening, weekend',
+      'Social: friends, neighbours, greetings, small talk',
+    ],
+    examples: [
+      { original: 'I need to buy groceries today.', translation: 'Мені потрібно купити продукти сьогодні.' },
+      { original: 'My morning routine is simple.', translation: 'Моя ранкова рутина проста.' },
+      { original: 'I have a doctor\'s appointment.', translation: 'У мене прийом у лікаря.' },
+      { original: 'It\'s a quiet neighbourhood.', translation: 'Це тихий район.' },
+      { original: 'My family lives nearby.', translation: 'Моя сім\'я живе поруч.' },
+      { original: 'What time do you usually wake up?', translation: 'О котрій ти зазвичай прокидаєшся?' },
+      { original: 'I cook dinner every evening.', translation: 'Я готую вечерю кожного вечора.' },
+      { original: 'The kids are playing in the garden.', translation: 'Діти граються у саду.' },
+      { original: 'Let\'s meet at the weekend.', translation: 'Давай зустрінемось на вихідних.' },
+      { original: 'How was your day?', translation: 'Як пройшов твій день?' },
+    ],
+  },
+};
+
 const GRAMMAR_BY_LEVEL: Record<string, { title: string; explanation: string; rules: string[]; grammar: { sentence: string; options: string[]; correct: string; explanation: string } }[]> = {
   B1: [
     { title: 'Present Simple', explanation: 'Used for habits, facts, and regular actions.', rules: ['Add -s for he/she/it', 'Use do/does for questions', 'Use don\'t/doesn\'t for negatives'], grammar: { sentence: 'She ___ to work every day.', options: ['go', 'goes', 'going', 'went'], correct: 'goes', explanation: 'Third person singular takes -s.' } },
@@ -185,6 +251,8 @@ function generateEnglishLevel(level: 'B1' | 'B1+' | 'B2' | 'C1'): CourseLevel['t
       subject: 'English' as const,
       priority: topic.priority,
       section: topic.priority === 'essential' ? '⭐ ESSENTIAL ENGLISH' : 'More Topics',
+      theory: TOPIC_THEORY[topic.id],
+      practiceTasks: topic.priority === 'essential' ? Array.from({ length: 15 }, (_, i) => `Exercise ${i + 1}: Practice ${topic.title.toLowerCase()} vocabulary and grammar`) : undefined,
       lessons: buildTopicLessons(
         `en-${level.toLowerCase().replace('+', 'p')}-${topic.id}`,
         topic.title,

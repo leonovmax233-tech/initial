@@ -8,6 +8,7 @@ import { ChevronRight, BookOpen, CircleCheck as CheckCircle, Star, Flame, Rocket
 import { useLearningStore } from '../store/useLearningStore';
 import { getPriorityBadge, sortTopicsByPriority } from '../lib/priority';
 import { Topic } from '../types/learning';
+import TopicTheory from '../components/learning/TopicTheory';
 
 const PriorityBadge = ({ topic }: { topic: Topic }) => {
   const badge = getPriorityBadge(topic);
@@ -92,6 +93,9 @@ const CoursePage = () => {
                     <PriorityBadge topic={topic} />
                   </div>
                   <p className="text-sm text-slate-500 px-2">{topic.description}</p>
+                  <div className="px-2">
+                    <TopicTheory topic={topic} />
+                  </div>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {topic.lessons.map((lesson) => {
                       const status = getLessonStatus(lesson.id);

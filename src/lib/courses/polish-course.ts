@@ -18,6 +18,54 @@ const ESSENTIAL_GRAMMAR_TITLES = new Set([
   'Przypadki',
 ]);
 
+const POLISH_TOPIC_THEORY: Record<string, { explanation: string; rules: string[]; examples: { original: string; translation: string }[] }> = {
+  travel: {
+    explanation: 'Podróżowanie — słownictwo i zwroty przydatne w podróży: bilet, pociąg, dworzec, kierunki.',
+    rules: [
+      'Bilet: bilet, peron, kasownik, ulga',
+      'Kierunki: w lewo, w prawo, prosto, obok',
+      'Transport: pociąg, autobus, stacja, odjazd',
+    ],
+    examples: [
+      { original: 'Gdzie jest stacja?', translation: 'Де знаходиться станція?' },
+      { original: 'Poproszę bilet do Krakowa.', translation: 'Один квиток до Кракова, будь ласка.' },
+      { original: 'Kiedy odjeżdża pociąg?', translation: 'Коли відправляється потяг?' },
+      { original: 'Skręć w lewo.', translation: 'Поверніть ліворуч.' },
+      { original: 'Ile kosztuje bilet?', translation: 'Скільки коштує квиток?' },
+    ],
+  },
+  work: {
+    explanation: 'Praca — słownictwo zawodowe: biuro, spotkanie, praca, szef.',
+    rules: [
+      'Biuro: biuro, kolega, szef, komputer',
+      'Spotkania: spotkanie, porządek obrad, protokół',
+      'Kariera: praca, umowa, pensja, awans',
+    ],
+    examples: [
+      { original: 'Mam spotkanie o 10.', translation: 'У мене зустріч о 10.' },
+      { original: 'Gdzie jest moje biuro?', translation: 'Де мій офіс?' },
+      { original: 'Mój szef jest miły.', translation: 'Мій начальник приємний.' },
+      { original: 'Podpisaliśmy umowę.', translation: 'Ми підписали контракт.' },
+      { original: 'Kiedy jest spotkanie?', translation: 'Коли зустріч?' },
+    ],
+  },
+  'daily-life': {
+    explanation: 'Codzienne życie — rozmowy i rutyna: powitania, jedzenie, zakupy.',
+    rules: [
+      'Powitania: cześć, dzień dobry, do widzenia',
+      'Jedzenie: obiad, kolacja, chleb, woda',
+      'Zakupy: sklep, cena, kupić, zapłacić',
+    ],
+    examples: [
+      { original: 'Cześć! Jak się masz?', translation: 'Привіт! Як справи?' },
+      { original: 'Co robisz dzisiaj?', translation: 'Що ти робиш сьогодні?' },
+      { original: 'Idę do sklepu.', translation: 'Я йду в магазин.' },
+      { original: 'Ile to kosztuje?', translation: 'Скільки це коштує?' },
+      { original: 'Smacznego!', translation: 'Смачного!' },
+    ],
+  },
+};
+
 const GRAMMAR_A1 = [
   { title: 'Powitania', explanation: 'Podstawowe zwroty grzecznościowe.', rules: ['Dzień dobry — formalnie', 'Cześć — nieformalnie', 'Do widzenia — pożegnanie'], sentence: '___! Jak się masz?', options: ['Dzień dobry', 'Do widzenia', 'Dziękuję', 'Proszę'], correct: 'Dzień dobry' },
   { title: 'Liczebniki', explanation: 'Liczby od 1 do 100.', rules: ['Jeden, dwa, trzy...', '11-19 mają specjalne formy', 'Setki: sto, dwieście'], sentence: 'Mam ___ lata.', options: ['dwadzieścia', 'dwadzieścia dwa', 'dwadzieścia trzy', 'trzydzieści'], correct: 'dwadzieścia' },
@@ -164,6 +212,8 @@ function generatePolishLevel(
       subject: 'Polish' as const,
       priority: topic.priority,
       section: topic.priority === 'essential' ? '⭐ ESSENTIAL POLISH' : 'More Topics',
+      theory: POLISH_TOPIC_THEORY[topic.id],
+      practiceTasks: topic.priority === 'essential' ? Array.from({ length: 15 }, (_, i) => `Zadanie ${i + 1}: Ćwicz słownictwo i gramatykę — ${topic.title}`) : undefined,
       lessons: buildTopicLessons(
         `pl-${level.toLowerCase()}-${topic.id}`,
         topic.title,

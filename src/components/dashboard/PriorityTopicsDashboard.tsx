@@ -46,7 +46,7 @@ function SubjectSection({ subject }: { subject: Subject }) {
     if (seen.has(t.id)) return false;
     seen.add(t.id);
     return true;
-  }).slice(0, 6);
+  }).slice(0, 12);
 
   if (unique.length === 0) return null;
 
@@ -85,7 +85,7 @@ function SubjectSection({ subject }: { subject: Subject }) {
 const PriorityTopicsDashboard: React.FC = () => {
   return (
     <div className="mb-12">
-      <h2 className="text-3xl font-black text-slate-900 mb-2">Most Important Topics</h2>
+      <h2 className="text-3xl font-black text-slate-900 mb-2">📊 Most Important Topics</h2>
       <p className="text-slate-500 mb-6">Focus on what matters most for practical use.</p>
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <SubjectSection subject="Python" />
