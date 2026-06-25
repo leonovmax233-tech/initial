@@ -6,9 +6,16 @@ import { Progress } from '../ui/progress';
 
 interface StatsOverviewProps {
   stats: UserStats;
+  completedLessons?: number;
 }
 
-const StatsOverview: React.FC<StatsOverviewProps> = ({ stats }) => {
+const StatsOverview: React.FC<StatsOverviewProps> = ({ stats, completedLessons = 0 }) => {
+  const accuracy = stats.accuracy ?? (
+    stats.totalAnswers > 0
+      ? Math.round((stats.correctAnswers / stats.totalAnswers) * 100)
+      : 100
+  );
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
       <Card className="p-6 flex items-center gap-4 bg-gradient-to-br from-orange-50 to-white border-orange-100">
@@ -40,8 +47,8 @@ const StatsOverview: React.FC<StatsOverviewProps> = ({ stats }) => {
           <BookOpen className="w-6 h-6" />
         </div>
         <div>
-          <p className="text-sm text-muted-foreground font-medium">Words Learned</p>
-          <h3 className="text-2xl font-bold">{stats.wordsLearned}</h3>
+          <p className="text-sm text-muted-foreground font-medium">Lessons Done</p>
+          <h3 className="text-2xl font-bold">{completedLessons}</h3>
         </div>
       </Card>
 
@@ -51,7 +58,7 @@ const StatsOverview: React.FC<StatsOverviewProps> = ({ stats }) => {
         </div>
         <div>
           <p className="text-sm text-muted-foreground font-medium">Accuracy</p>
-          <h3 className="text-2xl font-bold">{stats.accuracy}%</h3>
+          <h3 className="text-2xl font-bold">{accuracy}%</h3>
         </div>
       </Card>
     </div>

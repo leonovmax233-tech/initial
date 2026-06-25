@@ -9,21 +9,34 @@ import { AIService } from '../../lib/ai-service';
 
 interface AITutorModeProps {
   word: Word;
+  lessonContext?: string;
 }
 
-const AITutorMode: React.FC<AITutorModeProps> = ({ word }) => {
+const AITutorMode: React.FC<AITutorModeProps> = ({ word, lessonContext }) => {
   const [explanation, setExplanation] = useState<string>('');
+  const [grammarTip, setGrammarTip] = useState<string>('');
   const [loading, setLoading] = useState(true);
+  const [extraExample, setExtraExample] = useState<string>('');
 
   useEffect(() => {
-    const fetchExplanation = async () => {
-      setLoading(true);
-      const text = await AIService.getExplanation(word.original);
-      setExplanation(text);
-      setLoading(false);
-    };
-    fetchExplanation();
-  }, [word]);
+    setLoading(true);
+    const text = AIService.getExplanation(word);
+    setExplanation(text);
+    setGrammarTip(
+      AIService.explainGrammar(word.topicId ?? lessonContext ?? 'general')
+    );
+    setExtraExample(
+      word.example ??
+        `"${word.original}" is commonly used in ${lessonContext ?? 'everyday'} contexts.`
+    );
+    setLoading(false);
+  }, [word, lessonContext]);
+
+  const generateMore = () => {
+    setExtraExample(
+      `Try using "${word.original}" (${word.translation}) in a sentence about your day today.`
+    );
+  };
 
   return (
     <div className="max-w-2xl mx-auto">
@@ -57,17 +70,30 @@ const AITutorMode: React.FC<AITutorModeProps> = ({ word }) => {
               </div>
 
               <div className="flex gap-4">
+                <div className="p-2 bg-purple-100 rounded-lg h-fit">
+                  <BrainCircuit className="text-purple-600 w-5 h-5" />
+                </div>
+                <div>
+                  <h4 className="font-bold text-slate-900 mb-1">Граматика</h4>
+                  <p className="text-slate-600 leading-relaxed">{grammarTip}</p>
+                </div>
+              </div>
+
+              <div className="flex gap-4">
                 <div className="p-2 bg-blue-100 rounded-lg h-fit">
                   <MessageSquare className="text-blue-600 w-5 h-5" />
                 </div>
                 <div>
                   <h4 className="font-bold text-slate-900 mb-1">Приклад вживання</h4>
-                  <p className="text-slate-600 italic">"{word.example || 'AI генерує приклад...'}"</p>
+                  <p className="text-slate-600 italic">"{extraExample}"</p>
                 </div>
               </div>
 
               <div className="pt-6 border-t border-slate-100">
-                <Button className="w-full rounded-2xl bg-indigo-600 hover:bg-indigo-700">
+                <Button
+                  className="w-full rounded-2xl bg-indigo-600 hover:bg-indigo-700"
+                  onClick={generateMore}
+                >
                   <Sparkles className="mr-2 w-4 h-4" /> Згенерувати ще прикладів
                 </Button>
               </div>

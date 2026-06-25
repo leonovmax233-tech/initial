@@ -11,13 +11,15 @@ import { AIService } from '../lib/ai-service';
 
 const Index = () => {
   const navigate = useNavigate();
-  const { sets, stats, updateStreak } = useLearningStore();
+  const { sets, stats, lessonProgress, updateStreak, getRecommendation } = useLearningStore();
 
   useEffect(() => {
     updateStreak();
-  }, []);
+  }, [updateStreak]);
 
-  const aiRecommendation = AIService.recommendNextStep(stats);
+  const recommendation = getRecommendation();
+  const aiRecommendation = recommendation.message || AIService.recommendNextStep(stats);
+  const completedLessons = lessonProgress.filter((l) => l.completed).length;
 
   return (
     <div className="min-h-screen bg-slate-50/50 pb-20">
@@ -28,7 +30,7 @@ const Index = () => {
             <p className="text-slate-500 mt-2">Ваша екосистема знань.</p>
           </div>
           <div className="flex gap-4">
-            <Link to="/python">
+            <Link to="/course/Python">
               <Button variant="outline" className="rounded-2xl border-2 border-indigo-200 text-indigo-700 hover:bg-indigo-50">
                 <Code className="mr-2 w-5 h-5" /> Курс Python
               </Button>
@@ -41,7 +43,7 @@ const Index = () => {
           </div>
         </header>
 
-        <StatsOverview stats={stats as any} />
+        <StatsOverview stats={stats} completedLessons={completedLessons} />
 
         <Card className="mb-12 p-6 bg-gradient-to-r from-indigo-600 to-purple-600 text-white border-none rounded-3xl shadow-xl">
           <div className="flex items-center gap-4">
@@ -53,6 +55,19 @@ const Index = () => {
                 Порада від AI Тьютора <Sparkles className="w-4 h-4" />
               </h3>
               <p className="text-indigo-100 mt-1">{aiRecommendation}</p>
+              {recommendation.recommendedLessonId && recommendation.recommendedSubject && (
+                <Button
+                  variant="secondary"
+                  className="mt-3 rounded-xl"
+                  onClick={() =>
+                    navigate(
+                      `/course/${recommendation.recommendedSubject}/lesson/${recommendation.recommendedLessonId}`
+                    )
+                  }
+                >
+                  <BookOpen className="mr-2 w-4 h-4" /> Перейти до уроку
+                </Button>
+              )}
             </div>
           </div>
         </Card>

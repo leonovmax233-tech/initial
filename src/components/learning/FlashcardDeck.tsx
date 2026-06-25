@@ -10,16 +10,21 @@ import { Card } from '../ui/card';
 interface FlashcardDeckProps {
   words: Word[];
   onFinish: () => void;
+  onResult?: (wordId: string, correct: boolean) => void;
+  adaptiveDifficulty?: number;
 }
 
-const FlashcardDeck: React.FC<FlashcardDeckProps> = ({ words, onFinish }) => {
+const FlashcardDeck: React.FC<FlashcardDeckProps> = ({ words, onFinish, onResult }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isFlipped, setIsFlipped] = useState(false);
   const [direction, setDirection] = useState<'orig-trans' | 'trans-orig' | 'random'>('orig-trans');
 
   const currentWord = words[currentIndex];
 
-  const nextCard = () => {
+  const nextCard = (correct?: boolean) => {
+    if (correct !== undefined) {
+      onResult?.(currentWord.id, correct);
+    }
     if (currentIndex < words.length - 1) {
       setCurrentIndex(currentIndex + 1);
       setIsFlipped(false);
@@ -81,14 +86,25 @@ const FlashcardDeck: React.FC<FlashcardDeckProps> = ({ words, onFinish }) => {
         </motion.div>
       </div>
 
+      {isFlipped && (
+        <div className="flex justify-center gap-4 mb-6">
+          <Button variant="outline" className="rounded-full px-6 border-red-200" onClick={() => nextCard(false)}>
+            Не знаю
+          </Button>
+          <Button className="rounded-full px-6 bg-green-600 hover:bg-green-700" onClick={() => nextCard(true)}>
+            Знаю
+          </Button>
+        </div>
+      )}
+
       <div className="flex items-center justify-center gap-6">
         <Button variant="outline" size="lg" className="w-20 h-20 rounded-full border-2" onClick={prevCard} disabled={currentIndex === 0}>
           <ChevronLeft className="w-8 h-8" />
         </Button>
-        <Button size="lg" className="h-20 px-12 rounded-full text-xl font-black shadow-xl shadow-primary/20" onClick={nextCard}>
+        <Button size="lg" className="h-20 px-12 rounded-full text-xl font-black shadow-xl shadow-primary/20" onClick={() => nextCard()}>
           {currentIndex === words.length - 1 ? 'ЗАВЕРШИТИ' : 'НАСТУПНА'}
         </Button>
-        <Button variant="outline" size="lg" className="w-20 h-20 rounded-full border-2" onClick={nextCard} disabled={currentIndex === words.length - 1}>
+        <Button variant="outline" size="lg" className="w-20 h-20 rounded-full border-2" onClick={() => nextCard()} disabled={currentIndex === words.length - 1}>
           <ChevronRight className="w-8 h-8" />
         </Button>
       </div>
