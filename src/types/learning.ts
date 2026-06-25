@@ -1,5 +1,6 @@
 export type Language = 'English' | 'Ukrainian' | 'Polish';
-export type Subject = 'Language' | 'Python';
+export type Subject = 'English' | 'Polish' | 'Python';
+export type Level = 'A1' | 'A2' | 'B1' | 'B1+' | 'B2' | 'C1' | 'Beginner' | 'Intermediate' | 'Junior';
 
 export interface Word {
   id: string;
@@ -7,42 +8,22 @@ export interface Word {
   translation: string;
   example?: string;
   pronunciation?: string;
-  usageTip?: string;
-  difficulty: number; 
-  masteryLevel: number; 
+  masteryLevel: number;
   wrongCount: number;
 }
 
-export interface GrammarExercise {
-  id: string;
-  sentence: string; // "He ___ football every day."
-  correctAnswer: string;
-  options: string[];
-  explanation: string;
-}
-
-export interface PythonTopic {
-  id: string;
-  title: string;
-  level: 'Beginner' | 'Intermediate' | 'Junior';
-  explanation: string;
-  codeExample: string;
-  tasks: {
-    question: string;
-    options: string[];
-    correct: string;
-  }[];
-}
-
-export interface StudySet {
+export interface Topic {
   id: string;
   title: string;
   description: string;
-  subject: Subject;
-  level?: string;
-  words: Word[];
-  grammar?: GrammarExercise[];
-  createdAt: number;
+  explanation: string;
+  vocabulary: Word[];
+  grammarRules?: string;
+}
+
+export interface CourseLevel {
+  level: Level;
+  topics: Topic[];
 }
 
 export interface UserStats {
@@ -50,9 +31,7 @@ export interface UserStats {
   level: number;
   streak: number;
   lastActivityDate: string;
-  wordsLearned: number;
-  pythonProgress: number; // 0-100
   weakWordIds: string[];
 }
 
-export type LearningMode = 'overview' | 'flashcards' | 'quiz' | 'writing' | 'listening' | 'speaking' | 'grammar' | 'match' | 'ai-tutor';
+export type LearningMode = 'flashcards' | 'quiz' | 'writing' | 'listening' | 'speaking' | 'grammar' | 'match';
