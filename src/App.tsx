@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import CreateSet from "./pages/CreateSet";
 import StudySet from "./pages/StudySet";
+import PythonCourse from "./pages/PythonCourse";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -20,6 +21,7 @@ const App = () => (
           <Route path="/" element={<Index />} />
           <Route path="/create" element={<CreateSet />} />
           <Route path="/set/:id" element={<StudySet />} />
+          <Route path="/python" element={<PythonCourse />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>

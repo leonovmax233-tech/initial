@@ -1,30 +1,23 @@
 import { Word } from '../types/learning';
 
-export const AIService = {
-  async generateSetFromTopic(topic: string): Promise<Partial<Word>[]> {
-    // Simulating AI delay
-    await new Promise(resolve => setTimeout(resolve, 1500));
-    
-    const mockData: Record<string, Partial<Word>[]> = {
-      'Travel': [
-        { original: 'Airport', translation: 'Аеропорт', example: 'I am going to the airport.', pronunciation: '/ˈeəpɔːt/' },
-        { original: 'Passport', translation: 'Паспорт', example: 'Don\'t forget your passport.', pronunciation: '/ˈpɑːspɔːt/' },
-        { original: 'Ticket', translation: 'Квиток', example: 'Can I see your ticket?', pronunciation: '/ˈtɪkɪt/' },
-      ],
-      'Business': [
-        { original: 'Meeting', translation: 'Зустріч', example: 'The meeting starts at 9 AM.', pronunciation: '/ˈmiːtɪŋ/' },
-        { original: 'Contract', translation: 'Контракт', example: 'Please sign the contract.', pronunciation: '/ˈkɒntrækt/' },
-      ]
-    };
+const GRAMMAR_RULES: Record<string, string> = {
+  'present-simple': 'Present Simple використовується для регулярних дій. Додавайте -s для he/she/it.',
+  'past-simple': 'Past Simple використовується для завершених дій у минулому. Використовуйте другу форму дієслова.',
+  'python-loops': 'Цикли for в Python використовуються для ітерації по списках або діапазонах.',
+};
 
-    return mockData[topic] || [
-      { original: `${topic} word 1`, translation: 'Переклад 1', example: 'Example sentence.' },
-      { original: `${topic} word 2`, translation: 'Переклад 2', example: 'Example sentence.' },
-    ];
+export const AIService = {
+  getExplanation(word: string): string {
+    return `Слово "${word}" є важливим для вашого рівня. Рекомендую використовувати метод асоціацій: уявіть візуальний образ цього слова у контексті вашого дня.`;
+  },
+  
+  getGrammarTip(topicId: string): string {
+    return GRAMMAR_RULES[topicId] || "Зверніть увагу на порядок слів у реченні.";
   },
 
-  async getExplanation(word: string): Promise<string> {
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    return `The word "${word}" is commonly used in daily conversations. A good way to remember it is to associate it with...`;
+  recommendNextStep(stats: any): string {
+    if (stats.weakWordIds.length > 5) return "У вас накопичилося багато складних слів. Рекомендую режим 'Слабкі слова'.";
+    if (stats.xp < 500) return "Ви чудово почали! Спробуйте пройти тест з теми 'Подорожі'.";
+    return "Час вивчити щось нове в розділі Python!";
   }
 };
