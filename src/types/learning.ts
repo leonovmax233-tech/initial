@@ -12,13 +12,19 @@ export interface Word {
   wrongCount: number;
 }
 
+export interface Lesson {
+  id: string;
+  title: string;
+  explanation: string;
+  vocabulary: Word[];
+  practiceTasks?: string[]; // Placeholder for specific tasks
+}
+
 export interface Topic {
   id: string;
   title: string;
   description: string;
-  explanation: string;
-  vocabulary: Word[];
-  grammarRules?: string;
+  lessons: Lesson[];
 }
 
 export interface CourseLevel {
@@ -32,6 +38,11 @@ export interface UserStats {
   streak: number;
   lastActivityDate: string;
   weakWordIds: string[];
+  preferences: {
+    theme: 'light' | 'dark' | 'system';
+    sessionSize: number;
+    weakWordsPriority: boolean;
+  };
 }
 
 export type LearningMode = 'flashcards' | 'quiz' | 'writing' | 'listening' | 'speaking' | 'grammar' | 'match';

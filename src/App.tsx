@@ -8,6 +8,8 @@ import Index from "./pages/Index";
 import CreateSet from "./pages/CreateSet";
 import StudySet from "./pages/StudySet";
 import CoursePage from "./pages/CoursePage";
+import LessonPage from "./pages/LessonPage";
+import Settings from "./pages/Settings";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -24,8 +26,10 @@ const App = () => (
             <Routes>
               <Route path="/" element={<Index />} />
               <Route path="/course/:subject" element={<CoursePage />} />
+              <Route path="/course/:subject/lesson/:lessonId" element={<LessonPage />} />
               <Route path="/create" element={<CreateSet />} />
               <Route path="/set/:id" element={<StudySet />} />
+              <Route path="/settings" element={<Settings />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </main>

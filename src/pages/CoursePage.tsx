@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ENGLISH_COURSE, PYTHON_COURSE } from '../lib/course-data';
+import { ENGLISH_COURSE, POLISH_COURSE, PYTHON_COURSE } from '../lib/course-data';
 import { Card } from '../components/ui/card';
 import { Button } from '../components/ui/button';
 import { ChevronRight, BookOpen, PlayCircle, Star } from 'lucide-react';
@@ -11,58 +11,14 @@ const CoursePage = () => {
   const { subject } = useParams();
   const navigate = useNavigate();
 
-  const renderEnglish = () => (
-    <div className="space-y-12">
-      {ENGLISH_COURSE.map((level) => (
-        <div key={level.level}>
-          <h2 className="text-3xl font-black text-slate-900 mb-6 flex items-center gap-3">
-            <Star className="text-yellow-500 fill-yellow-500" /> Level {level.level}
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {level.topics.map((topic) => (
-              <Card key={topic.id} className="p-6 hover:shadow-xl transition-all border-slate-200 rounded-3xl group cursor-pointer" onClick={() => navigate(`/set/${topic.id}`)}>
-                <div className="flex justify-between items-start mb-4">
-                  <div className="p-3 bg-primary/10 rounded-2xl text-primary group-hover:scale-110 transition-transform">
-                    <BookOpen className="w-6 h-6" />
-                  </div>
-                  <Button variant="ghost" size="icon" className="rounded-full">
-                    <ChevronRight />
-                  </Button>
-                </div>
-                <h3 className="text-xl font-bold text-slate-900 mb-2">{topic.title}</h3>
-                <p className="text-slate-500 text-sm mb-6">{topic.description}</p>
-                <div className="flex items-center gap-2 text-xs font-bold text-primary uppercase tracking-widest">
-                  <PlayCircle className="w-4 h-4" /> Почати тему
-                </div>
-              </Card>
-            ))}
-          </div>
-        </div>
-      ))}
-    </div>
-  );
+  const getCourseData = () => {
+    if (subject === 'English') return ENGLISH_COURSE;
+    if (subject === 'Polish') return POLISH_COURSE;
+    if (subject === 'Python') return PYTHON_COURSE;
+    return [];
+  };
 
-  const renderPython = () => (
-    <div className="space-y-8">
-      <h2 className="text-3xl font-black text-slate-900 mb-6">Python: Beginner to Junior</h2>
-      <div className="grid grid-cols-1 gap-4">
-        {PYTHON_COURSE.map((topic, idx) => (
-          <Card key={topic.id} className="p-6 flex items-center justify-between border-slate-200 rounded-3xl hover:border-primary transition-colors cursor-pointer" onClick={() => navigate(`/set/${topic.id}`)}>
-            <div className="flex items-center gap-6">
-              <div className="w-12 h-12 bg-slate-900 text-white rounded-2xl flex items-center justify-center font-black text-xl">
-                {idx + 1}
-              </div>
-              <div>
-                <h3 className="text-xl font-bold text-slate-900">{topic.title}</h3>
-                <p className="text-slate-500">{topic.description}</p>
-              </div>
-            </div>
-            <Button className="rounded-2xl px-8">ВЧИТИ</Button>
-          </Card>
-        ))}
-      </div>
-    </div>
-  );
+  const courseData = getCourseData();
 
   return (
     <div className="max-w-5xl mx-auto p-8">
@@ -71,9 +27,44 @@ const CoursePage = () => {
         <p className="text-slate-500 text-lg mt-2">Оберіть тему та почніть навчання за структурованою програмою.</p>
       </header>
 
-      {subject === 'English' && renderEnglish()}
-      {subject === 'Python' && renderPython()}
-      {subject === 'Polish' && <div className="p-20 text-center text-slate-400 font-bold">Курс польської мови в розробці...</div>}
+      <div className="space-y-12">
+        {courseData.map((level) => (
+          <div key={level.level}>
+            <h2 className="text-3xl font-black text-slate-900 mb-6 flex items-center gap-3">
+              <Star className="text-yellow-500 fill-yellow-500" /> {level.level}
+            </h2>
+            <div className="space-y-8">
+              {level.topics.map((topic) => (
+                <div key={topic.id} className="space-y-4">
+                  <h3 className="text-xl font-bold text-slate-700 px-2">{topic.title}</h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {topic.lessons.map((lesson) => (
+                      <Card 
+                        key={lesson.id} 
+                        className="p-6 hover:shadow-xl transition-all border-slate-200 rounded-3xl group cursor-pointer bg-white"
+                        onClick={() => navigate(`/course/${subject}/lesson/${lesson.id}`)}
+                      >
+                        <div className="flex justify-between items-center">
+                          <div className="flex items-center gap-4">
+                            <div className="p-3 bg-primary/10 rounded-2xl text-primary group-hover:scale-110 transition-transform">
+                              <BookOpen className="w-6 h-6" />
+                            </div>
+                            <div>
+                              <h4 className="font-bold text-slate-900">{lesson.title}</h4>
+                              <p className="text-slate-500 text-xs uppercase tracking-widest font-bold mt-1">Урок</p>
+                            </div>
+                          </div>
+                          <ChevronRight className="text-slate-300 group-hover:text-primary transition-colors" />
+                        </div>
+                      </Card>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
     </div>
   );
 };
