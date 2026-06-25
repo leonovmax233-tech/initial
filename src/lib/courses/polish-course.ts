@@ -86,7 +86,7 @@ const GRAMMAR_B1 = [
   { title: 'Tryb warunkowy', explanation: 'Wyrażanie warunków.', rules: ['Gdybym miał...', 'Chciałbym...', 'Formalny rejestr'], sentence: 'Gdybym miał czas, ___ więcej.', options: ['czytam', 'czytałbym', 'przeczytam', 'czytałem'], correct: 'czytałbym' },
   { title: 'Strona bierna', explanation: 'Konstrukcje bierne.', rules: ['zostać + imiesłów', 'Formalny styl', 'Często w wiadomościach'], sentence: 'Dom ___ zbudowany w 1990.', options: ['jest', 'został', 'będzie', 'był'], correct: 'został' },
   { title: 'Imiesłowy', explanation: 'Formy imiesłowowe.', rules: ['-ący/-ąca — czynny', '-ny/-na — bierny', 'Równoczesność lub kolejność'], sentence: '___ książkę, usiadł.', options: ['Czytając', 'Przeczytawszy', 'Czyta', 'Czytał'], correct: 'Przeczytawszy' },
-  { title: 'Zdania podrzędne', explanation: '� � Łączenie zdań.', rules: ['że, żeby, gdy', 'Który, która, które', 'Ponieważ, chociaż'], sentence: 'Wiem, ___ on przyjdzie.', options: ['że', 'żeby', 'gdyby', 'aby'], correct: 'że' },
+  { title: 'Zdania podrzędne', explanation: 'Łączenie zdań w zdania złożone.', rules: ['że, żeby, gdy', 'Który, która, które', 'Ponieważ, chociaż'], sentence: 'Wiem, ___ on przyjdzie.', options: ['że', 'żeby', 'gdyby', 'aby'], correct: 'że' },
   { title: 'Słownictwo biznesowe', explanation: 'Język formalny w pracy.', rules: ['Pan/Pani — formalność', 'Proszę o... — prośby', 'Z poważaniem — zakończenie'], sentence: '___ o odpowiedź.', options: ['Proszę', 'Prosi', 'Prosił', 'Prosić'], correct: 'Proszę' },
 ];
 

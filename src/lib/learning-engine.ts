@@ -245,6 +245,49 @@ export function buildSessionReview(
   };
 }
 
+export interface SpacedRepetitionItem {
+  lessonId: string;
+  title: string;
+  subject: Subject;
+  topicId: string;
+  level: Lesson['level'];
+  intervalLabel: string;
+  completedAt: number;
+}
+
+// Spaced-repetition milestones: revisit core concepts after 3 days, 1 week, 1 month.
+const SPACED_REPETITION_INTERVALS: { label: string; ms: number }[] = [
+  { label: '1 місяць', ms: 30 * 24 * 60 * 60 * 1000 },
+  { label: '1 тиждень', ms: 7 * 24 * 60 * 60 * 1000 },
+  { label: '3 дні', ms: 3 * 24 * 60 * 60 * 1000 },
+];
+
+// Completed lessons whose last review crossed a 3-day / 1-week / 1-month milestone.
+export function getSpacedRepetitionDue(
+  lessonProgress: LessonProgress[],
+  now: number = Date.now()
+): SpacedRepetitionItem[] {
+  const lessons = getAllLessons();
+  const due: SpacedRepetitionItem[] = [];
+  lessonProgress.forEach((lp) => {
+    if (!lp.completed || !lp.completedAt) return;
+    const elapsed = now - lp.completedAt;
+    const milestone = SPACED_REPETITION_INTERVALS.find((i) => elapsed >= i.ms);
+    if (!milestone) return;
+    const lesson = lessons.find((l) => l.id === lp.lessonId);
+    due.push({
+      lessonId: lp.lessonId,
+      title: lesson?.title ?? lp.lessonId,
+      subject: lp.subject,
+      topicId: lp.topicId,
+      level: lp.level,
+      intervalLabel: milestone.label,
+      completedAt: lp.completedAt,
+    });
+  });
+  return due.sort((a, b) => a.completedAt - b.completedAt);
+}
+
 export function shouldShowHint(
   adaptiveDifficulty: number,
   wrongCount: number

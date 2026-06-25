@@ -16,14 +16,35 @@ interface PyExercise {
   ans: string;
 }
 
+// A "Debugging Challenge": buggy code the learner must read, diagnose and fix.
+interface DebugChallenge {
+  title: string;
+  description: string;
+  buggyCode: string;
+  expected: string;
+  bugHint: string;
+  fixedCode: string;
+  q: string;
+  opts: string[];
+  ans: string;
+}
+
+interface TopicTheory {
+  explanation: string;
+  rules: string[];
+  examples: { original: string; translation: string }[];
+}
+
 // ── CORE PYTHON TOPICS (MOST IMPORTANT) ──
-// Each core topic gets 10+ practical tasks.
+// Each core topic gets 10+ practical tasks plus a dedicated Debugging Challenge.
 const CORE_TOPICS: {
   id: string;
   title: string;
   desc: string;
   priority: Priority;
+  theory: TopicTheory;
   exercises: PyExercise[];
+  debugChallenge: DebugChallenge;
 }[] = [
   {
     id: 'py-variables',
@@ -60,6 +81,7 @@ const CORE_TOPICS: {
       { id: 'py-var-9', title: 'Augmented Assignment', level: 'Beginner', topic: 'py-variables', explanation: '+=, -=, *=, /= update in place.', code: 'count = 0\ncount += 5\nprint(count)', expected: '5', hint: 'count += 5 adds 5', solution: '5', q: 'x += 3 means?', opts: ['x = x + 3', 'x = 3', 'x == x+3', 'x++'], ans: 'x = x + 3' },
       { id: 'py-var-10', title: 'Variable Scope Intro', level: 'Beginner', topic: 'py-variables', explanation: 'Variables inside functions are local by default.', code: 'def f():\n    v = 10\n    return v\nprint(f())', expected: '10', hint: 'Local to function', solution: '10', q: 'Local variable is accessible?', opts: ['Inside function only', 'Everywhere', 'In module', 'Never'], ans: 'Inside function only' },
     ],
+    debugChallenge: { title: 'Fix the Broken Swap', description: 'This code should swap a and b so it prints "2 1", but it prints "2 2". Find and fix the bug.', buggyCode: 'a = 1\nb = 2\na = b\nb = a\nprint(a, b)', expected: '2 1', bugHint: 'a is overwritten before its old value is saved — use tuple unpacking.', fixedCode: 'a = 1\nb = 2\na, b = b, a\nprint(a, b)', q: 'Why does a = b then b = a fail to swap?', opts: ['a is overwritten before being saved', 'b is None', 'It is a syntax error', 'print is wrong'], ans: 'a is overwritten before being saved' },
   },
   {
     id: 'py-data-types',
@@ -97,6 +119,7 @@ const CORE_TOPICS: {
       { id: 'py-dt-9', title: 'Division Gives Float', level: 'Beginner', topic: 'py-data-types', explanation: '/ always returns float in Python 3.', code: 'r = 7 / 2\nprint(type(r).__name__)', expected: 'float', hint: '/ returns float', solution: 'float', q: 'Type of 7/2?', opts: ['float', 'int', 'str', 'bool'], ans: 'float' },
       { id: 'py-dt-10', title: 'Floor Division', level: 'Beginner', topic: 'py-data-types', explanation: '// returns an int (floor division).', code: 'r = 7 // 2\nprint(r)', expected: '3', hint: '// floors the result', solution: '3', q: 'Result of 7 // 2?', opts: ['3', '3.5', '4', '3.0'], ans: '3' },
     ],
+    debugChallenge: { title: 'Fix the Type Error', description: 'This code should print "Age: 30" but crashes with a TypeError. Find and fix the bug.', buggyCode: 'age = 30\nprint("Age: " + age)', expected: 'Age: 30', bugHint: 'You cannot concatenate a str and an int directly — convert the number.', fixedCode: 'age = 30\nprint("Age: " + str(age))', q: 'How do you fix "str + int" concatenation?', opts: ['Wrap the int in str()', 'Use a comma only', 'Remove the quotes', 'Use = instead of +'], ans: 'Wrap the int in str()' },
   },
   {
     id: 'py-input-output',
@@ -134,6 +157,7 @@ const CORE_TOPICS: {
       { id: 'py-io-9', title: 'f-string Math', level: 'Beginner', topic: 'py-input-output', explanation: 'f-strings can evaluate expressions.', code: 'x = 5\nprint(f"{x} squared is {x**2}")', expected: '5 squared is 25', hint: '{} evaluates expressions', solution: '5 squared is 25', q: 'f-string supports?', opts: ['Expressions in {}', 'Only variables', 'Only strings', 'Nothing'], ans: 'Expressions in {}' },
       { id: 'py-io-10', title: 'Prompt in Input', level: 'Beginner', topic: 'py-input-output', explanation: 'input(prompt) shows a message before reading.', code: 'print("Name: ?")\nprint("Got it")', expected: 'Name: ?\nGot it', hint: 'input(prompt) shows text', solution: 'Name: ?, Got it', q: 'Show prompt with input?', opts: ['input("Name: ")', 'print(input)', 'read("Name: ")', 'ask("Name: ")'], ans: 'input("Name: ")' },
     ],
+    debugChallenge: { title: 'Fix the Input Math', description: 'This code should print 8 but crashes. The value came in as text. Find and fix the bug.', buggyCode: 'num = "5"\nprint(num + 3)', expected: '8', bugHint: 'input() returns a string — convert it to int before doing math.', fixedCode: 'num = "5"\nprint(int(num) + 3)', q: 'Why does num + 3 crash when num is "5"?', opts: ['str and int cannot be added', '5 is too large', '3 must be a string', 'print needs a comma'], ans: 'str and int cannot be added' },
   },
   {
     id: 'py-conditions',
@@ -172,6 +196,7 @@ const CORE_TOPICS: {
       { id: 'py-if-9', title: 'Truthy / Falsy', level: 'Beginner', topic: 'py-conditions', explanation: '0, "", [], None are falsy.', code: 'if 0:\n    print("yes")\nelse:\n    print("no")', expected: 'no', hint: '0 is falsy', solution: 'no', q: 'Is 0 truthy?', opts: ['No', 'Yes', 'Sometimes', 'Error'], ans: 'No' },
       { id: 'py-if-10', title: 'Ternary Expression', level: 'Beginner', topic: 'py-conditions', explanation: 'value_if_true if condition else value_if_false.', code: 'x = 5\nlabel = "big" if x > 3 else "small"\nprint(label)', expected: 'big', hint: 'One-line conditional', solution: 'big', q: 'Ternary syntax?', opts: ['a if c else b', 'c ? a : b', 'if c: a else b', 'case(c,a,b)'], ans: 'a if c else b' },
     ],
+    debugChallenge: { title: 'Fix the Condition', description: 'This code should print "five" but raises a SyntaxError. Find and fix the bug.', buggyCode: 'x = 5\nif x = 5:\n    print("five")', expected: 'five', bugHint: 'Assignment uses =, but comparison inside if needs ==.', fixedCode: 'x = 5\nif x == 5:\n    print("five")', q: 'Which operator compares for equality?', opts: ['==', '=', '=>', 'equals'], ans: '==' },
   },
   {
     id: 'py-loops',
@@ -210,6 +235,7 @@ const CORE_TOPICS: {
       { id: 'py-loop-9', title: 'Sum with Loop', level: 'Beginner', topic: 'py-loops', explanation: 'Accumulate values in a loop.', code: 'total = 0\nfor i in range(4):\n    total += i\nprint(total)', expected: '6', hint: '0+1+2+3', solution: '6', q: 'Sum of range(4)?', opts: ['6', '10', '4', '3'], ans: '6' },
       { id: 'py-loop-10', title: 'Nested Loops', level: 'Beginner', topic: 'py-loops', explanation: 'Loops inside loops for 2D iteration.', code: 'for i in range(2):\n    for j in range(2):\n        print(i, j)', expected: '0 0\n0 1\n1 0\n1 1', hint: 'Inner runs fully per outer', solution: '0 0, 0 1, 1 0, 1 1', q: 'Nested loops produce?', opts: ['All pairs', 'Only outer', 'Only inner', 'One pair'], ans: 'All pairs' },
     ],
+    debugChallenge: { title: 'Fix the Infinite Loop', description: 'This loop should print 3, 2, 1 but never stops. Find and fix the bug.', buggyCode: 'n = 3\nwhile n > 0:\n    print(n)', expected: '3\n2\n1', bugHint: 'The loop variable n never changes, so the condition stays True forever.', fixedCode: 'n = 3\nwhile n > 0:\n    print(n)\n    n -= 1', q: 'Why does this while loop run forever?', opts: ['n is never decremented', 'print is too slow', '> should be <', 'n starts at 3'], ans: 'n is never decremented' },
   },
   {
     id: 'py-functions',
@@ -249,6 +275,7 @@ const CORE_TOPICS: {
       { id: 'py-fn-9', title: 'Multiple Returns', level: 'Beginner', topic: 'py-functions', explanation: 'Return a tuple to send multiple values.', code: 'def minmax(nums):\n    return min(nums), max(nums)\nprint(minmax([3, 1, 5]))', expected: '(1, 5)', hint: 'Return tuple', solution: '(1, 5)', q: 'Return multiple values as?', opts: ['Tuple', 'List only', 'Dict', 'Not possible'], ans: 'Tuple' },
       { id: 'py-fn-10', title: 'Lambda', level: 'Beginner', topic: 'py-functions', explanation: 'lambda args: expression is an anonymous function.', code: 'double = lambda x: x * 2\nprint(double(5))', expected: '10', hint: 'lambda x: x*2', solution: '10', q: 'Lambda syntax?', opts: ['lambda x: x*2', 'def lambda x: x*2', 'fn x => x*2', 'function(x) x*2'], ans: 'lambda x: x*2' },
     ],
+    debugChallenge: { title: 'Fix the Missing Return', description: 'This code should print 5 but prints None. Find and fix the bug.', buggyCode: 'def add(a, b):\n    a + b\nprint(add(2, 3))', expected: '5', bugHint: 'The function computes a + b but never returns it.', fixedCode: 'def add(a, b):\n    return a + b\nprint(add(2, 3))', q: 'Why does add(2, 3) print None?', opts: ['It has no return statement', 'a and b are strings', 'print is wrong', 'def is misspelled'], ans: 'It has no return statement' },
   },
   {
     id: 'py-lists',
@@ -289,6 +316,7 @@ const CORE_TOPICS: {
       { id: 'py-list-9', title: 'in Operator', level: 'Beginner', topic: 'py-lists', explanation: 'in checks membership.', code: 'print(2 in [1, 2, 3])', expected: 'True', hint: 'in checks presence', solution: 'True', q: '2 in [1,2,3]?', opts: ['True', 'False', 'Error', '2'], ans: 'True' },
       { id: 'py-list-10', title: 'List Comprehension', level: 'Beginner', topic: 'py-lists', explanation: '[expr for x in iterable] builds lists concisely.', code: 'squares = [x**2 for x in range(3)]\nprint(squares)', expected: '[0, 1, 4]', hint: 'x**2 for x', solution: '[0, 1, 4]', q: 'Comprehension syntax?', opts: ['[x for x in iter]', '(x for x)', '{x for x}', '<x for x>'], ans: '[x for x in iter]' },
     ],
+    debugChallenge: { title: 'Fix the Index Error', description: 'This code should print the last item (30) but crashes with an IndexError. Find and fix the bug.', buggyCode: 'nums = [10, 20, 30]\nprint(nums[3])', expected: '30', bugHint: 'Indexing is 0-based; the last valid index is len(nums) - 1, or use -1.', fixedCode: 'nums = [10, 20, 30]\nprint(nums[-1])', q: 'Why does nums[3] crash for a 3-item list?', opts: ['Valid indexes are 0..2', 'Lists start at 1', '3 is negative', 'print needs len()'], ans: 'Valid indexes are 0..2' },
   },
   {
     id: 'py-dictionaries',
@@ -328,6 +356,7 @@ const CORE_TOPICS: {
       { id: 'py-dict-9', title: 'in Operator', level: 'Beginner', topic: 'py-dictionaries', explanation: 'in checks if a key exists.', code: 'd = {"a": 1}\nprint("a" in d)', expected: 'True', hint: 'in checks keys', solution: 'True', q: '"a" in d checks?', opts: ['Keys', 'Values', 'Both', 'Neither'], ans: 'Keys' },
       { id: 'py-dict-10', title: 'Loop a Dict', level: 'Beginner', topic: 'py-dictionaries', explanation: 'for k, v in d.items() iterates pairs.', code: 'd = {"a": 1, "b": 2}\nfor k, v in d.items():\n    print(k, v)', expected: 'a 1\nb 2', hint: 'items() for pairs', solution: 'a 1, b 2', q: 'Loop key-value pairs?', opts: ['for k,v in d.items()', 'for k in d', 'for v in d', 'for d in items'], ans: 'for k,v in d.items()' },
     ],
+    debugChallenge: { title: 'Fix the KeyError', description: 'This code should print 0 when a key is missing but crashes with a KeyError. Find and fix the bug.', buggyCode: 'd = {"a": 1}\nprint(d["b"])', expected: '0', bugHint: 'Indexing a missing key raises KeyError — use .get(key, default).', fixedCode: 'd = {"a": 1}\nprint(d.get("b", 0))', q: 'How do you safely read a possibly-missing key?', opts: ['d.get("b", 0)', 'd["b"]', 'd.find("b")', 'd.key("b")'], ans: 'd.get("b", 0)' },
   },
 ];
 
@@ -431,6 +460,47 @@ function buildPythonLesson(ex: PyExercise) {
   });
 }
 
+function buildDebugLesson(topicId: string, dc: DebugChallenge) {
+  return buildLesson({
+    id: `${topicId}-debug`,
+    title: `🐞 Debugging Challenge: ${dc.title}`,
+    topicId,
+    subject: 'Python',
+    level: 'Beginner',
+    explanation: dc.description,
+    rules: [
+      'Read the buggy code and predict what it does',
+      'Find the line that causes the wrong result or error',
+      'Apply the smallest fix that makes it correct',
+    ],
+    examples: [{ original: dc.buggyCode.split('\n')[0], translation: `Expected output: ${dc.expected}` }],
+    vocabulary: [
+      { original: 'Bug', translation: dc.bugHint, example: dc.buggyCode.split('\n')[0] },
+      { original: 'Expected', translation: dc.expected, example: dc.fixedCode },
+    ],
+    practiceQuestions: [{
+      question: dc.q,
+      options: dc.opts,
+      correctAnswer: dc.ans,
+      hint: dc.bugHint,
+      steps: [dc.description, dc.bugHint, `Answer: ${dc.ans}`],
+      explanation: dc.bugHint,
+      type: 'multiple-choice' as const,
+    }],
+    codeExercises: [{
+      title: dc.title,
+      description: `${dc.description} Fix the code so it outputs: ${dc.expected}`,
+      starterCode: dc.buggyCode,
+      expectedOutput: dc.expected,
+      hint: dc.bugHint,
+      stepByStep: [dc.description, 'Locate the buggy line', dc.bugHint, `Expected output: ${dc.expected}`],
+      explanation: dc.bugHint,
+      solution: dc.fixedCode,
+      difficulty: 2,
+    }],
+  });
+}
+
 function buildTopic(meta: {
   id: string;
   title: string;
@@ -439,8 +509,16 @@ function buildTopic(meta: {
   exercises: PyExercise[];
   theory?: { explanation: string; rules: string[]; examples: { original: string; translation: string }[] };
   practiceTasks?: string[];
+  debugChallenge?: DebugChallenge;
 }): Topic {
   const lessons = meta.exercises.map(buildPythonLesson);
+  if (meta.debugChallenge) {
+    lessons.push(buildDebugLesson(meta.id, meta.debugChallenge));
+  }
+  const practiceTasks = meta.practiceTasks ?? meta.exercises.map((e) => e.title);
+  if (meta.debugChallenge) {
+    practiceTasks.push(`🐞 Debugging Challenge: ${meta.debugChallenge.title}`);
+  }
   return {
     id: meta.id,
     title: meta.title,
@@ -450,7 +528,7 @@ function buildTopic(meta: {
     section: meta.priority === 'core' ? 'CORE PYTHON (MOST IMPORTANT)' : 'Advanced Topics',
     lessons,
     theory: meta.theory,
-    practiceTasks: meta.practiceTasks ?? meta.exercises.map((e) => e.title),
+    practiceTasks,
   };
 }
 
